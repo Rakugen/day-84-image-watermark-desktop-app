@@ -25,9 +25,9 @@ from PIL import Image, ImageFont, ImageDraw, ImageTk
 BG_COLOR = "#B1DDC6"
 FG_COLOR = "#FF1234"
 FONT = "Arial"
+CANVAS_IMG = [0,1]
 
-
-image = Image.open("shiba.jpg")
+# image = Image.open("shiba.jpg")
 # watermark_image = image.copy()
 # draw = ImageDraw.Draw(watermark_image)
 # # ("font type",font size)
@@ -47,17 +47,17 @@ image = Image.open("shiba.jpg")
 
 
 def select_file(canvas):
-    # TODO: get filetype to accept images
     filetypes = [('All files', '*.*')]
     filename = tkinter.filedialog.askopenfilename(
         title="OPEN A FILE",
         initialdir='/',
         filetypes=filetypes
     )
-    # TODO: get new filename to open image on canvas
     try:
-        print(filename)
-        canvas.itemconfig(canvas_image, image=ImageTk.PhotoImage(Image.open(filename)))
+        img = ImageTk.PhotoImage(Image.open(filename).resize((700, 600)))
+        # appending image to global variable lets the object persist pass function call, otherwise was garbage collected
+        CANVAS_IMG.append(img)
+        canvas.itemconfig(canvas_image, image=img)
     except AttributeError:
         print("there was a problem")
 
@@ -75,6 +75,7 @@ text_label.grid(row=1)
 button1 = Button(text="Button1", command=lambda: select_file(canvas))
 button1.grid(row=2, pady=10)
 
+
 canvas_image = canvas.create_image(350, 300, image=shiba_img)
 canvas.grid(row=0, pady=10)
 
@@ -82,7 +83,7 @@ canvas.grid(row=0, pady=10)
 
 # TODO: ComboBox widget to select where to place watermark OR 2 scale widgets for x + y coords
 
-
+# TODO: fix resize to rescale
 
 window.mainloop()
 
