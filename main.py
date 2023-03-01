@@ -16,16 +16,20 @@
 # 6. clicking a button will save the image/ask to save w/watermark
 # optional: allow resizing of watermark, allow changing of opacity of watermark.
 
-
+# ================================================================================
 import tkinter.filedialog
 from tkinter import *
 from PIL import Image, ImageFont, ImageDraw, ImageTk
 
-
 BG_COLOR = "#B1DDC6"
 FG_COLOR = "#FF1234"
 FONT = "Arial"
-CANVAS_IMG = [0,1]
+CANVAS_IMG = []
+BASE_WIDTH = 700
+BASE_HEIGHT = 600
+
+# ================================================================================
+
 
 # image = Image.open("shiba.jpg")
 # watermark_image = image.copy()
@@ -61,13 +65,40 @@ def select_file(canvas):
     except AttributeError:
         print("there was a problem")
 
+def rescale_img(image):
+    copy = image.copy()
+    copy.thumbnail(size=(BASE_WIDTH, BASE_HEIGHT))
+    # wpercent = (BASE_WIDTH / float(image.size[0]))
+    # hsize = int((float(image.size[1]) * float(wpercent)))
+    #
+    # hpercent = (BASE_HEIGHT / float(image.size[1]))
+    # wsize = int((float(image.size[0]) * float(hpercent)))
+    # return image.resize((BASE_WIDTH, hsize))
+    return copy
+
+# ===============================================================================
 
 window = Tk()
 window.title("Watermark Editor")
 window.config(padx=50, pady=50, bg=BG_COLOR)
 
-canvas = Canvas(width=700, height=600, highlightthickness=0)
-shiba_img = ImageTk.PhotoImage(Image.open("shiba.jpg").resize((700, 600)))
+canvas = Canvas(width=BASE_WIDTH, height=BASE_HEIGHT, highlightthickness=0)
+# shiba_img = ImageTk.PhotoImage(Image.open("shiba.jpg").resize((700, 600)))
+
+
+# TODO: fix resize to rescale
+
+basewidth = 700
+img = Image.open('gi8wvzwepcs81.jpg')
+# wpercent = (basewidth/float(img.size[0]))
+# hsize = int((float(img.size[1])*float(wpercent)))
+# img = img.resize((basewidth, hsize))
+
+# rescale_img(img)
+shiba_img = ImageTk.PhotoImage(rescale_img(img))
+
+
+
 
 text_label = Label(text="Text", fg=FG_COLOR, font=(FONT, 16))
 text_label.grid(row=1)
@@ -76,14 +107,13 @@ button1 = Button(text="Button1", command=lambda: select_file(canvas))
 button1.grid(row=2, pady=10)
 
 
-canvas_image = canvas.create_image(350, 300, image=shiba_img)
+canvas_image = canvas.create_image(BASE_WIDTH/2, BASE_HEIGHT/2, image=shiba_img)
 canvas.grid(row=0, pady=10)
 
 # TODO: Tkinter Entry widget to input watermark text
 
 # TODO: ComboBox widget to select where to place watermark OR 2 scale widgets for x + y coords
 
-# TODO: fix resize to rescale
 
 window.mainloop()
 
