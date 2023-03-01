@@ -47,36 +47,41 @@ image = Image.open("shiba.jpg")
 
 
 def select_file(canvas):
-    filetypes = (
-        ('text files', '*.txt'),
-        ('All files', '*.*')
-    )
+    # TODO: get filetype to accept images
+    filetypes = [('All files', '*.*')]
     filename = tkinter.filedialog.askopenfilename(
         title="OPEN A FILE",
         initialdir='/',
         filetypes=filetypes
     )
-    print(filename)
-    canvas.itemconfig(canvas_image, image=ImageTk.PhotoImage(Image.open(filename)))
-    # Image.open(filename).show()
+    # TODO: get new filename to open image on canvas
+    try:
+        print(filename)
+        canvas.itemconfig(canvas_image, image=ImageTk.PhotoImage(Image.open(filename)))
+    except AttributeError:
+        print("there was a problem")
 
 
 window = Tk()
 window.title("Watermark Editor")
 window.config(padx=50, pady=50, bg=BG_COLOR)
 
-canvas = Canvas(width=500, height=600, highlightthickness=0)
-shiba_img = ImageTk.PhotoImage(Image.open("shiba.jpg").resize((500, 600)))
-# resize_shiba = Image.open("new_img1.png").resize((400,400))
-# canvas.create_image(100, 300, anchor="nw", image=shiba_img)
+canvas = Canvas(width=700, height=600, highlightthickness=0)
+shiba_img = ImageTk.PhotoImage(Image.open("shiba.jpg").resize((700, 600)))
 
 text_label = Label(text="Text", fg=FG_COLOR, font=(FONT, 16))
 text_label.grid(row=1)
 
 button1 = Button(text="Button1", command=lambda: select_file(canvas))
 button1.grid(row=2, pady=10)
-canvas_image = canvas.create_image(250, 300, image=shiba_img)
+
+canvas_image = canvas.create_image(350, 300, image=shiba_img)
 canvas.grid(row=0, pady=10)
+
+# TODO: Tkinter Entry widget to input watermark text
+
+# TODO: ComboBox widget to select where to place watermark OR 2 scale widgets for x + y coords
+
 
 
 window.mainloop()
