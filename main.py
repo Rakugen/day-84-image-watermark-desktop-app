@@ -16,11 +16,11 @@
 # 6. clicking a button will save the image/ask to save w/watermark
 # optional: allow resizing of watermark, allow changing of opacity of watermark.
 
-# ================================================================================
 import tkinter.filedialog
 from tkinter import *
 from PIL import Image, ImageFont, ImageDraw, ImageTk
 
+# ====================================== GLOBALS ==========================================
 BG_COLOR = "#B1DDC6"
 FG_COLOR = "#FF1234"
 FONT = "Arial"
@@ -29,7 +29,7 @@ SCALED_IMG = []
 BASE_WIDTH = 700
 BASE_HEIGHT = 600
 
-# ================================================================================
+# ======================================= FUNCTIONS =========================================
 
 
 # image = Image.open("shiba.jpg")
@@ -80,36 +80,36 @@ def rescale_img(image):
     # return image.resize((BASE_WIDTH, hsize))
     return copy
 
-# ===============================================================================
+# =================================== UI SETUP ============================================
 
 window = Tk()
 window.title("Watermark Editor")
 window.config(padx=50, pady=50, bg=BG_COLOR)
 
 canvas = Canvas(width=BASE_WIDTH, height=BASE_HEIGHT, highlightthickness=0, bg=BG_COLOR)
-# shiba_img = ImageTk.PhotoImage(Image.open("shiba.jpg").resize((700, 600)))
 
-
-# TODO: fix resize to rescale
-
+# Placeholder image:
 original_img = Image.open('shiba.jpg')
-
 shiba_img = ImageTk.PhotoImage(rescale_img(original_img))
 
-
-
-
+# Labels
 text_label = Label(text="Text", fg=FG_COLOR, font=(FONT, 16))
 text_label.grid(row=1)
 
-button1 = Button(text="Button1", command=lambda: select_file(canvas))
-button1.grid(row=2, pady=10)
+# Buttons
+button1 = Button(text="Open Image", command=lambda: select_file(canvas))
+button1.grid(row=2, column=0, pady=10)
+button2 = Button(text="Add Watermark")
+button2.grid(row=2, column=2)
 
-
+# Canvas Image
 canvas_image = canvas.create_image(BASE_WIDTH/2, BASE_HEIGHT/2, image=shiba_img)
-canvas.grid(row=0, pady=10)
+canvas.grid(row=0, columnspan=4, pady=10)
 
 # TODO: Tkinter Entry widget to input watermark text
+wm_text = tkinter.StringVar()
+entry1 = Entry(window, textvariable=wm_text, font=('arial',10,'normal'))
+entry1.grid(row=1, column=2)
 
 # TODO: ComboBox widget to select where to place watermark OR 2 scale widgets for x + y coords
 
