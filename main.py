@@ -24,7 +24,8 @@ from PIL import Image, ImageFont, ImageDraw, ImageTk
 BG_COLOR = "#B1DDC6"
 FG_COLOR = "#FF1234"
 FONT = "Arial"
-CANVAS_IMG = []
+UNSCALED_IMG = []
+SCALED_IMG = []
 BASE_WIDTH = 700
 BASE_HEIGHT = 600
 
@@ -58,19 +59,22 @@ def select_file(canvas):
         filetypes=filetypes
     )
     try:
-        img = ImageTk.PhotoImage(Image.open(filename).resize((700, 600)))
+        img = Image.open(filename)
         # appending image to global variable lets the object persist pass function call, otherwise was garbage collected
-        CANVAS_IMG.append(img)
-        canvas.itemconfig(canvas_image, image=img)
+        UNSCALED_IMG.append(img)
+        scaled_img = ImageTk.PhotoImage(rescale_img(img))
+        SCALED_IMG.append(scaled_img)
+
+        canvas.itemconfig(canvas_image, image=scaled_img)
+
     except AttributeError:
         print("there was a problem")
 
 def rescale_img(image):
     copy = image.copy()
-    copy.thumbnail(size=(BASE_WIDTH, BASE_HEIGHT))
+    copy.thumbnail(size=(BASE_WIDTH, BASE_HEIGHT), resample=Image.LANCZOS)
     # wpercent = (BASE_WIDTH / float(image.size[0]))
     # hsize = int((float(image.size[1]) * float(wpercent)))
-    #
     # hpercent = (BASE_HEIGHT / float(image.size[1]))
     # wsize = int((float(image.size[0]) * float(hpercent)))
     # return image.resize((BASE_WIDTH, hsize))
@@ -82,20 +86,15 @@ window = Tk()
 window.title("Watermark Editor")
 window.config(padx=50, pady=50, bg=BG_COLOR)
 
-canvas = Canvas(width=BASE_WIDTH, height=BASE_HEIGHT, highlightthickness=0)
+canvas = Canvas(width=BASE_WIDTH, height=BASE_HEIGHT, highlightthickness=0, bg=BG_COLOR)
 # shiba_img = ImageTk.PhotoImage(Image.open("shiba.jpg").resize((700, 600)))
 
 
 # TODO: fix resize to rescale
 
-basewidth = 700
-img = Image.open('gi8wvzwepcs81.jpg')
-# wpercent = (basewidth/float(img.size[0]))
-# hsize = int((float(img.size[1])*float(wpercent)))
-# img = img.resize((basewidth, hsize))
+original_img = Image.open('shiba.jpg')
 
-# rescale_img(img)
-shiba_img = ImageTk.PhotoImage(rescale_img(img))
+shiba_img = ImageTk.PhotoImage(rescale_img(original_img))
 
 
 
