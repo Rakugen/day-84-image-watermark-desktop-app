@@ -64,11 +64,14 @@ def select_file(canvas):
         UNSCALED_IMG.append(img)
         scaled_img = ImageTk.PhotoImage(rescale_img(img))
         SCALED_IMG.append(scaled_img)
-
         canvas.itemconfig(canvas_image, image=scaled_img)
 
     except AttributeError:
         print("there was a problem")
+
+def write_watermark(text):
+    entry1.delete(0, 100)
+    pass
 
 def rescale_img(image):
     copy = image.copy()
@@ -80,12 +83,14 @@ def rescale_img(image):
     # return image.resize((BASE_WIDTH, hsize))
     return copy
 
+def clicked(event):
+    print(f'clicked at {event.x},{event.y}')
+
 # =================================== UI SETUP ============================================
 
 window = Tk()
 window.title("Watermark Editor")
-window.config(padx=50, pady=50, bg=BG_COLOR)
-
+window.config(padx=15, bg=BG_COLOR)
 canvas = Canvas(width=BASE_WIDTH, height=BASE_HEIGHT, highlightthickness=0, bg=BG_COLOR)
 
 # Placeholder image:
@@ -99,17 +104,22 @@ text_label.grid(row=1)
 # Buttons
 button1 = Button(text="Open Image", command=lambda: select_file(canvas))
 button1.grid(row=2, column=0, pady=10)
-button2 = Button(text="Add Watermark")
-button2.grid(row=2, column=2)
+button2 = Button(text="Add Watermark", command=lambda: write_watermark(wm_text.get()))
+button2.grid(row=2, column=3, pady=10)
 
 # Canvas Image
 canvas_image = canvas.create_image(BASE_WIDTH/2, BASE_HEIGHT/2, image=shiba_img)
-canvas.grid(row=0, columnspan=4, pady=10)
+canvas.grid(row=0, columnspan=4, pady=15)
 
-# TODO: Tkinter Entry widget to input watermark text
+# Tkinter Entry widget to input watermark text
 wm_text = tkinter.StringVar()
 entry1 = Entry(window, textvariable=wm_text, font=('arial',10,'normal'))
-entry1.grid(row=1, column=2)
+entry1.insert(0, "Input Text Here")
+entry1.grid(row=1, column=3)
+
+# TODO: Test a click event option
+canvas.bind("<Button-1>", clicked)
+
 
 # TODO: ComboBox widget to select where to place watermark OR 2 scale widgets for x + y coords
 
